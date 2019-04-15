@@ -38,5 +38,6 @@
       "git add"
     ]
   },
-  "wst": "/dist/"
+  "wst": "/dist/",
+  "homepage": "git@github.com:adityajain15/coalitiontinder"
 }

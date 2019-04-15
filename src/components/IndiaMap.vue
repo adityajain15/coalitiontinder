@@ -7,7 +7,7 @@
 <script>
 import IndiaSVG from '../assets/untitled.svg'
 export default {
-  name: 'HelloWorld',
+  name: 'IndiaMap',
   components: {
     IndiaSVG
   }

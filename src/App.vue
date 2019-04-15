@@ -1,6 +1,9 @@
 <template>
   <div id="app" class="mw8 center mv5">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div>
+
+    </div>
+    <IndiaMap/>
     <div id="cardContainer" class="w-100">
       <vue-swing @throwoutright="throwright" @throwoutleft="throwleft" @throwoutup="throwup" ref="vueswing">
         <template v-for="(card, index) in cards">
@@ -14,7 +17,7 @@
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import IndiaMap from './components/IndiaMap.vue'
 import VueSwing from 'vue-swing'
 import { csv } from 'd3-fetch'
 import { nest } from 'd3-collection'
@@ -22,7 +25,7 @@ const capitalize = require('capitalize')
 export default {
   name: 'app',
   components: {
-    HelloWorld,
+    IndiaMap,
     VueSwing
   },
   data () {
@@ -30,7 +33,12 @@ export default {
       candidates: {},
       NDA: ['BJP', 'SHS', 'TDP', 'SAD', 'PMK', 'LJP', 'RLSP', 'AD', 'PMK', 'SWP', 'AINRC', 'NPP', 'NPF'],
       UPA: ['INC', 'NCP', 'RJD', 'IUML', 'JMM', 'KEC(M)', 'RSP'],
-      cards: ['INC', 'BJP', 'TDP', 'RJD', 'JMM']
+      cards: ['INC', 'BJP', 'TDP', 'RJD', 'JMM'],
+      count: {
+        'NDA': 0,
+        'UPA': 0,
+        'Third': 0
+      }
     }
   },
   async mounted () {
@@ -65,7 +73,16 @@ export default {
         // console.log(constituency)
         const elem = document.getElementById(constituency.replace(/ /g, '_'))
         if (!elem) console.log(constituency)
-        if (this.NDA.includes(this.candidates[state][constituency][0].party)) { elem.style.fill = 'orange' } else if (this.UPA.includes(this.candidates[state][constituency][0].party)) { elem.style.fill = 'royalblue' } else { elem.style.fill = 'green' }
+        if (this.NDA.includes(this.candidates[state][constituency][0].party)) {
+          elem.style.fill = 'orange'
+          this.$set(this.count, 'NDA', this.count.NDA + 1)
+        } else if (this.UPA.includes(this.candidates[state][constituency][0].party)) {
+          elem.style.fill = 'royalblue'
+          this.$set(this.count, 'UPA', this.count.UPA + 1)
+        } else {
+          elem.style.fill = 'deeppink'
+          this.$set(this.count, 'Third', this.count.Third + 1)
+        }
       }
     }
   },
@@ -73,9 +90,11 @@ export default {
     throwright (args) {
       console.log(args)
       console.log('right')
+      this.cards.pop()
     },
     throwleft () {
       console.log('left')
+      this.cards.pop()
     },
     throwup () {
       console.log('up')
