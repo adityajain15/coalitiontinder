@@ -1,6 +1,6 @@
 <template>
-  <div class="w-100 pa2 center">
-    <IndiaSVG class="map"/>
+  <div>
+    <IndiaSVG ref="map" class="map"/>
   </div>
 </template>
 
