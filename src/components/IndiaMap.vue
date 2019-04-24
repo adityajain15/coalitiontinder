@@ -12,13 +12,12 @@ export default {
     IndiaSVG
   },
   mounted () {
-    const children = Array.from(this.$refs.map.childNodes).map(d=>d.nodeName === 'path' ? d : Array.from(d.children)).flat()
+    const children = Array.from(this.$refs.map.childNodes).map(d => d.nodeName === 'path' ? d : Array.from(d.children)).flat()
     children.forEach(el => {
       el.addEventListener('mouseover', (event) => {
-        if(event.target.parentNode.nodeName === 'g') {this.$emit('tooltip', [event, event.target.id, event.target.parentNode.id])}
-        else {this.$emit('tooltip', [event, event.target.id, event.target.id])}
+        if (event.target.parentNode.nodeName === 'g') { this.$emit('tooltip', [event, event.target.id, event.target.parentNode.id]) } else { this.$emit('tooltip', [event, event.target.id, event.target.id]) }
       })
-      el.addEventListener('mouseleave', (event) => {this.$emit('tooltipOff')})
+      el.addEventListener('mouseleave', (event) => { this.$emit('tooltipOff') })
     })
   }
 }

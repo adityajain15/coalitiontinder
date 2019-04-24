@@ -56,9 +56,9 @@
 import IndiaMap from './components/IndiaMap.vue'
 import { csv } from 'd3-fetch'
 import { nest } from 'd3-collection'
+import virtualList from 'vue-virtual-scroll-list'
 const capitalize = require('capitalize')
 const toPX = require('to-px')
-import virtualList from 'vue-virtual-scroll-list'
 
 export default {
   name: 'app',
@@ -68,7 +68,7 @@ export default {
   },
   data () {
     return {
-      tooltip: {'display' : false, 'state': '', 'constituency': '', 'style': {}},
+      tooltip: { 'display': false, 'state': '', 'constituency': '', 'style': {} },
       candidates: {},
       NDA: ['BJP', 'SHS', 'TDP', 'SAD', 'LJP', 'RLSP', 'AD', 'PMK', 'SWP', 'AINRC', 'NPP', 'NPF'],
       UPA: ['INC', 'NCP', 'RJD', 'IUML', 'JMM', 'KEC(M)', 'RSP'],
@@ -79,7 +79,7 @@ export default {
         'Grand': 0,
         'NA': 0
       },
-      swings: [ {from: NDA_votes, to: UPA_votes, value: 5} ],
+      swings: [ { from: NDA_votes, to: UPA_votes, value: 5 } ],
       listItemHeight: 81,
       numberItems: 8,
       parties: new Map()
@@ -92,8 +92,7 @@ export default {
 
     const list_container_height = this.$refs.hudcontainer.getBoundingClientRect().height - this.$refs.spancontainer.getBoundingClientRect().height
     this.$refs.listcontainer.style.height = `${list_container_height}px`
-    
-    
+
     let candidates = await csv('./result.csv', (d) => {
       return {
         state: d.state.trim().toLowerCase(),
@@ -113,7 +112,7 @@ export default {
       }
     })
 
-    //candidates = candidates.filter(d => d.party !== 'IND' && d.party !== 'NOTA')
+    // candidates = candidates.filter(d => d.party !== 'IND' && d.party !== 'NOTA')
     this.candidates = nest()
       .key(d => capitalize.words(d.state))
       .key(d => capitalize.words(d.name))
@@ -125,9 +124,9 @@ export default {
     this.colorConstituencies()
   },
   methods: {
-    changeTooltip([event, constituency, state]) {
-      this.$set(this.tooltip, 'state', state.replace(/_/g,' '))
-      this.$set(this.tooltip, 'constituency', constituency.replace(/_/g,' '))
+    changeTooltip ([event, constituency, state]) {
+      this.$set(this.tooltip, 'state', state.replace(/_/g, ' '))
+      this.$set(this.tooltip, 'constituency', constituency.replace(/_/g, ' '))
       this.$set(this.tooltip, 'coalitionWinner', this.getCoalitionWinner(this.tooltip.state, this.tooltip.constituency))
       this.tooltip.ballot2014 = this.candidates[this.tooltip.state][this.tooltip.constituency]
       this.tooltip.style.top = `${event.offsetY + 10}px`
@@ -137,11 +136,11 @@ export default {
     tooltipOff () {
       this.$set(this.tooltip, 'display', false)
     },
-    getParties() {
+    getParties () {
       const parties = new Map()
       for (let state in this.candidates) {
         for (let constituency in this.candidates[state]) {
-          for (let i = 0; i < (this.candidates[state][constituency].length > 5 ? 5 : this.candidates[state][constituency].length); i++) { //parties need to come atleast fifth in any constituency to be counted towards this interactive
+          for (let i = 0; i < (this.candidates[state][constituency].length > 5 ? 5 : this.candidates[state][constituency].length); i++) { // parties need to come atleast fifth in any constituency to be counted towards this interactive
             if (this.candidates[state][constituency][i].party === 'NOTA' || this.candidates[state][constituency][i].party === 'IND') { continue }
             // if(this.candidates[state][constituency][i].vote_pct > 25.00) {
             if (!parties.has(this.candidates[state][constituency][i].party)) {
@@ -166,10 +165,10 @@ export default {
       let UPA_parties = []
       let NDA_parties = []
       let grand_parties = []
-      const all_parties = this.candidates[state][constituency].map(d=>d.party)
+      const all_parties = this.candidates[state][constituency].map(d => d.party)
 
-      //console.log(`${constituency}, ${state} - ${total_votes_polled}`)
-      
+      // console.log(`${constituency}, ${state} - ${total_votes_polled}`)
+
       for (let i = 0; i < this.candidates[state][constituency].length; i++) {
         let total_votes = this.candidates[state][constituency][i].total
         if (this.UPA.includes(this.candidates[state][constituency][i].party)) {
@@ -187,23 +186,15 @@ export default {
       }
 
       console.log(this.swings)
-      
-      for(let i = 0; i < this.swings.length; i++) {
-        const from_party = this.candidates[state][constituency].find(d=>d.party === this.swings[i].from)
+
+      for (let i = 0; i < this.swings.length; i++) {
+        const from_party = this.candidates[state][constituency].find(d => d.party === this.swings[i].from)
         const swing = Math.floor((this.swings[i].value / 100) * from_party.total)
 
-        if(UPA_parties.includes(this.swings[i].from)) { UPA_votes = UPA_votes - swing }
-        else if(NDA_parties.includes(this.swings[i].from)) { NDA_votes = NDA_votes - swing }
-        else if(grand_parties.includes(this.swings[i].from)) { grand_votes = grand_votes - swing }
-        else { all_votes[all_votes.findIndex(d=>d[3] === this.swings[i].from)][0] -= swing }
+        if (UPA_parties.includes(this.swings[i].from)) { UPA_votes = UPA_votes - swing } else if (NDA_parties.includes(this.swings[i].from)) { NDA_votes = NDA_votes - swing } else if (grand_parties.includes(this.swings[i].from)) { grand_votes = grand_votes - swing } else { all_votes[all_votes.findIndex(d => d[3] === this.swings[i].from)][0] -= swing }
 
-        if(UPA_parties.includes(this.swings[i].to)) { UPA_votes = UPA_votes + swing }
-        else if(NDA_parties.includes(this.swings[i].to)) { NDA_votes = NDA_votes + swing }
-        else if(grand_parties.includes(this.swings[i].to)) { grand_votes = grand_votes + swing }
-        else { all_votes[all_votes.findIndex(d=>d[3] === this.swings[i].to)][0] += swing }
+        if (UPA_parties.includes(this.swings[i].to)) { UPA_votes = UPA_votes + swing } else if (NDA_parties.includes(this.swings[i].to)) { NDA_votes = NDA_votes + swing } else if (grand_parties.includes(this.swings[i].to)) { grand_votes = grand_votes + swing } else { all_votes[all_votes.findIndex(d => d[3] === this.swings[i].to)][0] += swing }
       }
-
-
 
       all_votes.push([UPA_votes, 'UPA', 'royalblue', UPA_parties, 'UPA'])
       all_votes.push([NDA_votes, 'NDA', 'orange', NDA_parties, 'NDA'])
@@ -216,7 +207,7 @@ export default {
       let a_voteshare = (vote_a / total_votes_polled) * 100
       let b_voteshare = (vote_b / total_votes_polled) * 100
       let c_voteshare = (vote_c / total_votes_polled) * 100
-      //debugger
+      // debugger
       if (swing < 0) {
         let lost_votes
         if (Math.abs(swing) > a_voteshare) {
@@ -235,14 +226,14 @@ export default {
           vote_b = 0
         } else {
           gained_votes = Math.floor(((swing / 2) / 100) * total_votes_polled)
-          vote_b = vote_b - gained_votes 
+          vote_b = vote_b - gained_votes
         }
         if (c_voteshare < (swing / 2)) { // if this party doesn't have enough voteshare to lose to the primary party
           gained_votes = gained_votes + vote_c
           vote_c = 0
         } else {
           gained_votes = gained_votes + Math.floor(((swing / 2) / 100) * total_votes_polled)
-          vote_c = vote_c - gained_votes 
+          vote_c = vote_c - gained_votes
         }
         vote_a = vote_a + gained_votes
       }
