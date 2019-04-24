@@ -5,7 +5,7 @@
 <style type="text/css">
 	.st0{fill:#008080;stroke:#FFFFFF;}
 </style>
-<g id="Jammu_and_Kashmir">
+<g id="Jammu_And_Kashmir">
 	<path id="Baramulla" class="st0" d="M242.5,0.6l13,7.5v15l-13,7.5l-13-7.5v-15L242.5,0.6z"/>
 	<path id="Ladakh" class="st0" d="M268.5,0.6l13,7.5v15l-13,7.5l-13-7.5v-15L268.5,0.6z"/>
 	<path id="Srinagar" class="st0" d="M255.5,23.1l13,7.5v15l-13,7.5l-13-7.5v-15L255.5,23.1z"/>
@@ -53,7 +53,7 @@
 	<path id="Gurgaon" class="st0" d="M210.5,345.1l13,7.5v15l-13,7.5l-13-7.5v-15L210.5,345.1z"/>
 	<path id="Faridabad" class="st0" d="M223.5,367.6l13,7.5v15l-13,7.5l-13-7.5v-15L223.5,367.6z"/>
 </g>
-<g id="NCT_OF_Delhi">
+<g id="Delhi">
 	<path id="North_West_Delhi" class="st0" d="M269.9,276.9l13,7.5v15l-13,7.5l-13-7.5v-15L269.9,276.9z"/>
 	<path id="North_East_Delhi" class="st0" d="M295.9,276.9l13,7.5v15l-13,7.5l-13-7.5v-15L295.9,276.9z"/>
 	<path id="West_Delhi" class="st0" d="M282.9,299.4l13,7.5v15l-13,7.5l-13-7.5v-15L282.9,299.4z"/>
@@ -275,7 +275,7 @@
 </g>
 <path id="Daman_And_Diu" class="st0" d="M32.1,605.4l13,7.5v15l-13,7.5l-13-7.5v-15L32.1,605.4z"/>
 <path id="Dadra_And_Nagar_Haveli" class="st0" d="M125.1,630.9l13,7.5v15l-13,7.5l-13-7.5v-15L125.1,630.9z"/>
-<g id="Chhattisgarh">
+<g id="Chattisgarh">
 	<path id="Sarguja" class="st0" d="M432,536.7l13,7.5v15l-13,7.5l-13-7.5v-15L432,536.7z"/>
 	<path id="Korba" class="st0" d="M419,559.2l13,7.5v15l-13,7.5l-13-7.5v-15L419,559.2z"/>
 	<path id="Raigarh" class="st0" d="M445,559.2l13,7.5v15l-13,7.5l-13-7.5v-15L445,559.2z"/>
@@ -405,7 +405,7 @@
 	<path id="Aska" class="st0" d="M646.8,702.3l13,7.5v15l-13,7.5l-13-7.5v-15L646.8,702.3z"/>
 	<path id="Puri" class="st0" d="M672.8,702.3l13,7.5v15l-13,7.5l-13-7.5v-15L672.8,702.3z"/>
 </g>
-<g id="Telengana">
+<g id="Telangana">
 	<path id="Zahirabad" class="st0" d="M410.9,703.6l13,7.5v15l-13,7.5l-13-7.5v-15L410.9,703.6z"/>
 	<path id="Nizamabad" class="st0" d="M436.9,703.6l13,7.5v15l-13,7.5l-13-7.5v-15L436.9,703.6z"/>
 	<path id="Adilabad" class="st0" d="M462.9,703.6l13,7.5v15l-13,7.5l-13-7.5v-15L462.9,703.6z"/>
@@ -481,7 +481,7 @@
 	<path id="Mysore" class="st0" d="M247.4,956.4l13,7.5v15l-13,7.5l-13-7.5v-15L247.4,956.4z"/>
 	<path id="Chamarajanagar" class="st0" d="M273.4,956.4l13,7.5v15l-13,7.5l-13-7.5v-15L273.4,956.4z"/>
 </g>
-<g id="Kerela">
+<g id="Kerala">
 	<path id="Kasaragod" class="st0" d="M247.9,1006.9l13,7.5v15l-13,7.5l-13-7.5v-15L247.9,1006.9z"/>
 	<path id="Kannur" class="st0" d="M273.9,1006.9l13,7.5v15l-13,7.5l-13-7.5v-15L273.9,1006.9z"/>
 	<path id="Vatakara" class="st0" d="M299.9,1006.9l13,7.5v15l-13,7.5l-13-7.5v-15L299.9,1006.9z"/>
