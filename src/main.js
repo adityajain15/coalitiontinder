@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import App from './App.vue'
 import 'reset-css'
+import 'vuetify/dist/vuetify.min.css'
+import Vuetify from 'vuetify'
+import VueNumberInput from '@chenfengyuan/vue-number-input'
 
-import VueSwing from 'vue-swing'
-Vue.component('vue-swing', VueSwing)
+Vue.use(VueNumberInput)
+Vue.use(Vuetify)
 
 Vue.config.productionTip = false
 

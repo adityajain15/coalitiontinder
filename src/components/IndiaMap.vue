@@ -24,9 +24,30 @@ export default {
 </script>
 
 <style scoped>
-.map {
+
+path {
   stroke: white;
   stroke-width: 1px;
+}
+
+.flipped{
+  stroke: red;
+  stroke-width: 3px;
+  stroke-dasharray: 10;
+  animation: flip;
+  animation-duration: 30s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes flip {
+  from {
+    stroke-dashoffset: 0%;
+  }
+
+  to {
+    stroke-dashoffset: 100%;
+  }
 }
 
 path:hover {

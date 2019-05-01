@@ -6,16 +6,49 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <link rel="stylesheet" href="https://unpkg.com/tachyons@4/css/tachyons.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' rel="stylesheet">
     <style>
       @import url('https://fonts.googleapis.com/css?family=Rajdhani:500,700');
     </style>
-    <title>coalitiontinder</title>
+    <style>
+      body{background: floralwhite;}
+    </style>
+    <title>A headline</title>
   </head>
-  <body>
+  <body class="center rajdhani">
     <noscript>
-      <strong>We're sorry but coalitiontinder doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      <strong>We're sorry but this interactive doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
+    <main class="mw9 center mv5 ph1 ph3-ns lh-copy">
+      <img src="<%= BASE_URL %>logo.svg" style="background: #b71c1c;" class="pa2 w-30 center db"/>
+      <div class="mv5">
+        <h1 class="f-headline tc bold">The bigglyest heading</h1>
+        <h2 class="f2 lh-title tc">By <a href="https://twitter.com/whaleandpetunia" style="color: black;">Aditya Jain</a></h2>
+      </div>
+      <article class="measure center f3 mv6" style="font-family: Georgia;">
+        <section class="mv5">
+            An article recently <a href="https://thewire.in/politics/uttar-pradesh-elections-2019-bjp-sp-bsp-rld">published on the Wire</a> tries 
+            to assess the possible impact of the ‘Grand Coalition’ in the upcoming 2019 General Elections in India. 
+            The article, written by two researchers at IIT Guwahati and UMass Amherst, uses data from past elections conducted in the Uttar 
+            Pradesh, a state that carries the highest number of seats in India’s electoral system and the results of which are likely to have 
+            a significant impact on the upcoming 2019 General Elections.
+        </section>
+        <section class="mv5">
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        </section>
+        <section class="mv5">
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        </section>
+      </article>
+      <div id="app"></div>
+    </main>
+    <footer class="black h5 f3">
+      <div class="mw9 center w-75 pv4" style="color: white;">
+        <span class="">Contributors towards this interactive include Pranjali Kureel, Kabir Agarwal and Raghu Karnad</span>
+        <p>Methodology: </p>
+      </div>
+      
+
+    </footer>    
   </body>
 </html>

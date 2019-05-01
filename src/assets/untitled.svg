@@ -2,6 +2,24 @@
 <!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="India" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 1140 1149.4" style="enable-background:new 0 0 1140 1149.4;" xml:space="preserve">
+<defs>
+	<pattern id="NA" patternUnits="userSpaceOnUse" width="8" height="8">
+		<image xlink:href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path fill='black' d='M0 0h8v8h-8z'/><path d='M0 0l8 8zm8 0l-8 8z' stroke-width='.5' stroke='floralwhite'/></svg>" x="0" y="0" width="8" height="8">
+		</image>
+	</pattern>
+	<pattern id="Grand" patternUnits="userSpaceOnUse" width="8" height="8">
+		<image xlink:href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path fill='deeppink' d='M0 0h8v8h-8z'/><path d='M0 0l8 8zm8 0l-8 8z' stroke-width='.5' stroke='floralwhite'/></svg>" x="0" y="0" width="8" height="8">
+		</image>
+	</pattern>
+	<pattern id="UPA" patternUnits="userSpaceOnUse" width="8" height="8">
+		<image xlink:href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path fill='royalblue' d='M0 0h8v8h-8z'/><path d='M0 0l8 8zm8 0l-8 8z' stroke-width='.5' stroke='floralwhite'/></svg>" x="0" y="0" width="8" height="8">
+		</image>
+	</pattern>
+	<pattern id="NDA" patternUnits="userSpaceOnUse" width="8" height="8">
+		<image xlink:href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path fill='orange' d='M0 0h8v8h-8z'/><path d='M0 0l8 8zm8 0l-8 8z' stroke-width='.5' stroke='floralwhite'/></svg>" x="0" y="0" width="8" height="8">
+		</image>
+	</pattern>
+</defs>
 <style type="text/css">
 	.st0{fill:#008080;stroke:#FFFFFF;}
 </style>
