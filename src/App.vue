@@ -89,7 +89,6 @@ import virtualList from 'vue-virtual-scroll-list'
 const capitalize = require('capitalize')
 const toPX = require('to-px')
 
-
 export default {
   name: 'app',
   components: {
@@ -101,11 +100,11 @@ export default {
       tooltip: { 'display': false, 'state': '', 'constituency': '', 'style': {} },
       candidates: {},
       NDA: ['BJP'],
-      //['BJP', 'SHS', 'TDP', 'SAD', 'LJP', 'RLSP', 'AD', 'PMK', 'SWP', 'AINRC', 'NPP', 'NPF']
+      // ['BJP', 'SHS', 'TDP', 'SAD', 'LJP', 'RLSP', 'AD', 'PMK', 'SWP', 'AINRC', 'NPP', 'NPF']
       UPA: ['INC'],
-      //['INC', 'NCP', 'RJD', 'IUML', 'JMM', 'KEC(M)', 'RSP'],
+      // ['INC', 'NCP', 'RJD', 'IUML', 'JMM', 'KEC(M)', 'RSP'],
       Grand: ['SP', 'BSP', 'RLD'],
-      //['AITC', 'ADMK', 'CPM', 'YSRCP', 'SDF', 'NPEP', 'JD(S)', 'JKPDP', 'BLSP', 'BOPF', 'AIUDF', 'AIMIM', 'TRS']
+      // ['AITC', 'ADMK', 'CPM', 'YSRCP', 'SDF', 'NPEP', 'JD(S)', 'JKPDP', 'BLSP', 'BOPF', 'AIUDF', 'AIMIM', 'TRS']
       count: {
         'NDA': 0,
         'UPA': 0,
@@ -114,7 +113,7 @@ export default {
       },
       rawData: [],
       total_votes_nationally: 0,
-      swings: [{party: 'NDA', value: -2, filter: []}],
+      swings: [{ party: 'NDA', value: -2, filter: [] }],
       parties: new Map(),
       states: [],
       vote_tallies: [],
@@ -126,8 +125,8 @@ export default {
     const device_height = window.innerHeight
     this.$refs.hudcontainer.style.height = `${window.innerWidth < toPX('48em') ? device_height - map_height : device_height}px`
     this.$refs.listcontainer.style.height = `${this.$refs.hudcontainer.getBoundingClientRect().height - this.$refs.buttonContainer.getBoundingClientRect().height}px`
-    
-    //this.$refs.swingcontainer.style.height = `${list_container_height}px`
+
+    // this.$refs.swingcontainer.style.height = `${list_container_height}px`
 
     let candidates = await csv('./result.csv', (d) => {
       return {
@@ -148,7 +147,7 @@ export default {
       }
     })
 
-    this.total_votes_nationally = candidates.map(d=>d.total).reduce((a,b)=>a+b)
+    this.total_votes_nationally = candidates.map(d => d.total).reduce((a, b) => a + b)
     this.rawData = candidates
     // candidates = candidates.filter(d => d.party !== 'IND' && d.party !== 'NOTA')
     this.candidates = nest()
@@ -157,7 +156,7 @@ export default {
       .sortValues((a, b) => parseInt(a.total) > parseInt(b.total) ? -1 : 1)
       .object(candidates)
 
-    this.states = candidates.map(d=>capitalize.words(d.state)).reduce((a,b)=>a.includes(b) ? [...a] : [...a, b], []).sort((a,b)=>a.toLowerCase()<b.toLowerCase()?-1:1)
+    this.states = candidates.map(d => capitalize.words(d.state)).reduce((a, b) => a.includes(b) ? [...a] : [...a, b], []).sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1)
 
     this.getParties()
     this.getVoteTallies()
@@ -181,7 +180,7 @@ export default {
       this.$set(this.tooltip, 'display', false)
     },
     addSwing () {
-      this.swings.push({party: 'NDA', value: 0, filter: []})
+      this.swings.push({ party: 'NDA', value: 0, filter: [] })
       this.getVoteTallies()
       this.colorConstituencies()
     },
@@ -233,13 +232,13 @@ export default {
       for (let i = 0; i < this.candidates[state][constituency].length; i++) {
         let total_votes = this.candidates[state][constituency][i].total
         if (this.UPA.includes(this.candidates[state][constituency][i].party)) {
-          UPA_votes = UPA_votes + total_votes
+          UPA_votes += total_votes
           UPA_parties.push(this.candidates[state][constituency][i].party)
         } else if (this.NDA.includes(this.candidates[state][constituency][i].party)) {
-          NDA_votes = NDA_votes + total_votes
+          NDA_votes += total_votes
           NDA_parties.push(this.candidates[state][constituency][i].party)
         } else if (this.Grand.includes(this.candidates[state][constituency][i].party)) {
-          grand_votes = grand_votes + total_votes
+          grand_votes += total_votes
           grand_parties.push(this.candidates[state][constituency][i].party)
         } else {
           all_votes.push([total_votes, 'NA', 'black', [this.candidates[state][constituency][i].party], this.candidates[state][constituency][i].party])
@@ -250,30 +249,33 @@ export default {
       all_votes.push([NDA_votes, 'NDA', 'orange', NDA_parties, 'NDA'])
       all_votes.push([grand_votes, 'Grand', 'deeppink', grand_parties, 'Mahagathbandan'])
 
-      for(let i = 0; i < this.swings.length; i++) {
-        //debugger
-        if(this.swings[i].filter.length && !this.swings[i].filter.includes(state)) { continue }
-        const party = this.swings[i].party
-        let number_of_votes = this.vote_tallies[i][0]
-        let votes_polled = this.vote_tallies[i][1]
-        const votes_polled_constituency = all_votes.find(d=>d[4] === party)[0]
-        const vote_value = Math.floor(((Math.abs(this.swings[i].value) / 100) * number_of_votes) * (votes_polled_constituency / votes_polled))
-        const other_party_total_votes = all_votes.filter(d=>d[4] !== party).map(d=>d[0]).reduce((a,b)=>a+b)
-        
-        if(this.swings[i].value >= 0) {
+      for (let i = 0; i < this.swings.length; i++) {
+        // debugger
+        if (this.swings[i].filter.length && !this.swings[i].filter.includes(state)) { continue }
+        const party = this.swings[i].party // the coalition name
+        let number_of_votes = this.vote_tallies[i][0] // total votes polled, either nationally or in a particular state
+        let votes_polled = this.vote_tallies[i][1] // total votes polled by the party
+        const votes_polled_constituency = all_votes.find(d => d[4] === party)[0] // votes polled by the party in this constituency
+        const vote_value = Math.floor(((Math.abs(this.swings[i].value) / 100) * number_of_votes) * (votes_polled_constituency / votes_polled)) 
+        /* ^ first calculates the number of votes to be 
+        increased nationally or statewise. Then calculates the number to be increased in a particular 
+        constituency depending on whether or not the party has a stronghold here */
+        const other_party_total_votes = all_votes.filter(d => d[4] !== party).map(d => d[0]).reduce((a, b) => a + b)
+        // ^ calculate all votes except the given party's vote
+        if (this.swings[i].value >= 0) { // if the swing is positive, towards the party (increasing its voteshare)
           let total_reduction = 0
-          for(let j=0;j<all_votes.length;j++) {
-            if(all_votes[j][4] === party) {continue}
+          for (let j = 0; j < all_votes.length; j++) {
+            if (all_votes[j][4] === party) { continue }
             const reduction = Math.floor(vote_value * (all_votes[j][0] / other_party_total_votes))
             all_votes[j][0] = reduction > all_votes[j][0] ? 0 : all_votes[j][0] - reduction
             total_reduction = reduction > all_votes[j][0] ? total_reduction + all_votes[j][0] : total_reduction + reduction
           }
-          all_votes[all_votes.findIndex(d=>d[4] === party)][0] += total_reduction
-        } else {
-          let total_reduction = Math.min(all_votes.find(d=>d[4] === party)[0], vote_value)
-          all_votes[all_votes.findIndex(d=>d[4] === party)][0] -= total_reduction
-          for(let j=0;j<all_votes.length;j++) {
-            if(all_votes[j][4] === party) {continue}
+          all_votes[all_votes.findIndex(d => d[4] === party)][0] += total_reduction
+        } else { // if the swing is negative, away from the party (decreasing its voteshare)
+          let total_reduction = Math.min(all_votes.find(d => d[4] === party)[0], vote_value)
+          all_votes[all_votes.findIndex(d => d[4] === party)][0] -= total_reduction
+          for (let j = 0; j < all_votes.length; j++) {
+            if (all_votes[j][4] === party) { continue }
             const addition = Math.floor(total_reduction * (all_votes[j][0] / other_party_total_votes))
             all_votes[j][0] += addition
           }
@@ -311,7 +313,7 @@ export default {
     },
     getVoteTallies () {
       this.vote_tallies = []
-      for(let i = 0; i < this.swings.length; i++) {
+      for (let i = 0; i < this.swings.length; i++) {
         this.vote_tallies.push(this.getNumVotesInStates(this.swings[i].filter.length ? this.swings[i].filter : [], this.swings[i].party))
       }
     },
@@ -320,21 +322,21 @@ export default {
       let party_votes = 0
 
       const vote_tallies = {}
-      
-      for(let state in this.candidates) {
-        if(states.length && !states.includes(state)) { continue }
-        for(let constituency in this.candidates[state]){
-          for(let i = 0; i < this.candidates[state][constituency].length; i++) {
+
+      for (let state in this.candidates) {
+        if (states.length && !states.includes(state)) { continue }
+        for (let constituency in this.candidates[state]) {
+          for (let i = 0; i < this.candidates[state][constituency].length; i++) {
             total += this.candidates[state][constituency][i].total
-            
-            if(this.NDA.includes(this.candidates[state][constituency][i].party)) {
-              if(vote_tallies.hasOwnProperty('NDA')){vote_tallies['NDA']+=this.candidates[state][constituency][i].total} else {vote_tallies['NDA'] = this.candidates[state][constituency][i].total}
-            } else if(this.UPA.includes(this.candidates[state][constituency][i].party)) {
-              if(vote_tallies.hasOwnProperty('UPA')){vote_tallies['UPA']+=this.candidates[state][constituency][i].total} else {vote_tallies['UPA'] = this.candidates[state][constituency][i].total}
-            } else if(this.Grand.includes(this.candidates[state][constituency][i].party)) {
-              if(vote_tallies.hasOwnProperty('Mahagathbandan')){vote_tallies['Mahagathbandan']+=this.candidates[state][constituency][i].total} else {vote_tallies['Mahagathbandan'] = this.candidates[state][constituency][i].total}
+
+            if (this.NDA.includes(this.candidates[state][constituency][i].party)) {
+              if (vote_tallies.hasOwnProperty('NDA')) { vote_tallies['NDA'] += this.candidates[state][constituency][i].total } else { vote_tallies['NDA'] = this.candidates[state][constituency][i].total }
+            } else if (this.UPA.includes(this.candidates[state][constituency][i].party)) {
+              if (vote_tallies.hasOwnProperty('UPA')) { vote_tallies['UPA'] += this.candidates[state][constituency][i].total } else { vote_tallies['UPA'] = this.candidates[state][constituency][i].total }
+            } else if (this.Grand.includes(this.candidates[state][constituency][i].party)) {
+              if (vote_tallies.hasOwnProperty('Mahagathbandan')) { vote_tallies['Mahagathbandan'] += this.candidates[state][constituency][i].total } else { vote_tallies['Mahagathbandan'] = this.candidates[state][constituency][i].total }
             } else {
-              if(vote_tallies.hasOwnProperty(this.candidates[state][constituency][i].party)){vote_tallies[this.candidates[state][constituency][i].party]+=this.candidates[state][constituency][i].total} else {vote_tallies[this.candidates[state][constituency][i].party] = this.candidates[state][constituency][i].total}
+              if (vote_tallies.hasOwnProperty(this.candidates[state][constituency][i].party)) { vote_tallies[this.candidates[state][constituency][i].party] += this.candidates[state][constituency][i].total } else { vote_tallies[this.candidates[state][constituency][i].party] = this.candidates[state][constituency][i].total }
             }
           }
         }
@@ -408,6 +410,7 @@ a {
 
 #listcontainer{
   overflow-y: scroll;
+  background: white;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -434,5 +437,9 @@ a {
 .number-input__button{
   top: 0px !important;
   bottom: 0px !important;
+}
+
+ol{
+  list-style-type: decimal !important;
 }
 </style>
