@@ -53,7 +53,7 @@
           <div class="w-50 dib"><button :class="showSwingContainer ? 'center db pa2 grow selected-button' : 'center db pa2 grow style-button'" @click="showSwing(true)">Manage Vote Swings</button></div>
         </div>
         <keep-alive>
-          <div v-if="showSwingContainer" ref="swingcontainer" id="swingcontainer" class="overflow-scroll">
+          <div v-if="showSwingContainer" ref="swingcontainer" id="swingcontainer" class="overflow-scroll ph2">
             <template v-for="(swing, index) in swings">
               <div :key="`swing-${index}`" :class="index ? 'mv6' : 'mb6'">
                 <v-select class="w-third ph2 rajdhani" :style="{display:'inline-block'}" v-model="swing.party" :items="['NDA', 'UPA', 'Mahagathbandan']" @change="colorConstituencies" label="Swing from"></v-select>
@@ -66,13 +66,13 @@
           </div>
         </keep-alive>
         <keep-alive>
-          <div v-if="!showSwingContainer" ref="listcontainer" id="listcontainer" class="overflow-scroll">
+          <div v-if="!showSwingContainer" ref="listcontainer" id="listcontainer" class="overflow-scroll ph2">
             <span class="w-100 db center tc f3 f2-ns bold pv2" ref="spancontainer">Change party allegiances to see how the seat share changes</span>
             <div v-for="(party, index) in parties" class="pv2 ph5 ph0-ns" :key="`party-${index}`" style="box-sizing: border-box;" :id="`list-item-${index}`">
               <span class="f3 f2-ns tc tl-ns w-100 w-25-ns dib bold">{{party[0]}}</span>
-              <div class="w-100 w-25-ns dib pa2 grow"><button v-if="!(party[0] === 'INC' || party[0] === 'SP' || party[0] === 'BSP')" @click="changeCoalitions(party[0], NDA)" class="style-button w-100 pa2" :style="NDA.includes(party[0]) ? 'background: orange' : ''">NDA</button></div>
-              <div class="w-100 w-25-ns dib pa2 grow"><button v-if="!(party[0] === 'BSP' || party[0] === 'SP' || party[0] === 'BJP')" @click="changeCoalitions(party[0], UPA)" class="style-button w-100 pa2" :style="UPA.includes(party[0]) ? 'background: royalblue' : ''">UPA</button></div>
-              <div class="w-100 w-25-ns dib pa2 grow"><button v-if="!(party[0] === 'INC' || party[0] === 'BJP')" @click="changeCoalitions(party[0], Grand)" class="style-button w-100 pa2" :style="Grand.includes(party[0]) ? 'background: deeppink' : ''">Grand Alliance</button></div>
+              <div class="w-100 w-25-ns dib pa2 grow"><button :disabled="restrictedParties.includes(party[0])" v-if="!restrictedParties.includes(party[0]) || party[0] === 'BJP'" @click="changeCoalitions(party[0], NDA)" class="style-button w-100 pa2" :style="NDA.includes(party[0]) ? 'background: orange' : ''">NDA</button></div>
+              <div class="w-100 w-25-ns dib pa2 grow"><button :disabled="restrictedParties.includes(party[0])" v-if="!restrictedParties.includes(party[0]) || party[0] === 'INC'" @click="changeCoalitions(party[0], UPA)" class="style-button w-100 pa2" :style="UPA.includes(party[0]) ? 'background: royalblue' : ''">UPA</button></div>
+              <div class="w-100 w-25-ns dib pa2 grow"><button v-if="!restrictedParties.includes(party[0]) || party[0] === 'BSP' || party[0] === 'SP' || party[0] === 'RLD'" @click="changeCoalitions(party[0], Grand)" class="style-button w-100 pa2" :style="Grand.includes(party[0]) ? 'background: deeppink' : ''">Grand Alliance</button></div>
             </div>
           </div>
         </keep-alive>
@@ -104,6 +104,7 @@ export default {
       UPA: ['INC'],
       // ['INC', 'NCP', 'RJD', 'IUML', 'JMM', 'KEC(M)', 'RSP'],
       Grand: ['SP', 'BSP', 'RLD'],
+      restrictedParties: ['BJP', 'INC', 'SP', 'BSP', 'RLD'],
       // ['AITC', 'ADMK', 'CPM', 'YSRCP', 'SDF', 'NPEP', 'JD(S)', 'JKPDP', 'BLSP', 'BOPF', 'AIUDF', 'AIMIM', 'TRS']
       count: {
         'NDA': 0,
@@ -113,7 +114,7 @@ export default {
       },
       rawData: [],
       total_votes_nationally: 0,
-      swings: [{ party: 'NDA', value: -2, filter: [] }],
+      swings: [], //{ party: 'NDA', value: -2, filter: [] }
       parties: new Map(),
       states: [],
       vote_tallies: [],
@@ -123,7 +124,7 @@ export default {
   async mounted () {
     const map_height = this.$refs.mapcontainer.getBoundingClientRect().height
     const device_height = window.innerHeight
-    this.$refs.hudcontainer.style.height = `${window.innerWidth < toPX('48em') ? device_height - map_height : device_height}px`
+    this.$refs.hudcontainer.style.height = `${window.innerWidth < toPX('48em') ? device_height : device_height}px`
     this.$refs.listcontainer.style.height = `${this.$refs.hudcontainer.getBoundingClientRect().height - this.$refs.buttonContainer.getBoundingClientRect().height}px`
 
     // this.$refs.swingcontainer.style.height = `${list_container_height}px`
@@ -217,7 +218,12 @@ export default {
           }
         }
       }
-      this.parties = Array.from(parties.entries()).sort((a, b) => a[1] < b[1] ? 1 : -1)
+      this.parties = Array.from(parties.entries()).sort((a, b) => {
+        if(this.restrictedParties.includes(a[0]) && this.restrictedParties.includes(b[0]) ) { return a[1] < b[1] ? 1 : -1 }
+        else if(this.restrictedParties.includes(a[0])) { return -1 }
+        else if(this.restrictedParties.includes(b[0])) { return 1 }
+        return a[1] < b[1] ? 1 : -1
+      })
     },
     getCoalitionWinner (state, constituency) {
       let UPA_votes = 0
@@ -256,9 +262,9 @@ export default {
         let number_of_votes = this.vote_tallies[i][0] // total votes polled, either nationally or in a particular state
         let votes_polled = this.vote_tallies[i][1] // total votes polled by the party
         const votes_polled_constituency = all_votes.find(d => d[4] === party)[0] // votes polled by the party in this constituency
-        const vote_value = Math.floor(((Math.abs(this.swings[i].value) / 100) * number_of_votes) * (votes_polled_constituency / votes_polled)) 
-        /* ^ first calculates the number of votes to be 
-        increased nationally or statewise. Then calculates the number to be increased in a particular 
+        const vote_value = Math.floor(((Math.abs(this.swings[i].value) / 100) * number_of_votes) * (votes_polled_constituency / votes_polled))
+        /* ^ first calculates the number of votes to be
+        increased nationally or statewise. Then calculates the number to be increased in a particular
         constituency depending on whether or not the party has a stronghold here */
         const other_party_total_votes = all_votes.filter(d => d[4] !== party).map(d => d[0]).reduce((a, b) => a + b)
         // ^ calculate all votes except the given party's vote
@@ -412,6 +418,14 @@ a {
   overflow-y: scroll;
   background: white;
   -webkit-overflow-scrolling: touch;
+  border: 3px solid black;
+}
+
+#swingcontainer{
+  overflow-y: scroll;
+  background: white;
+  -webkit-overflow-scrolling: touch;
+  border: 3px solid black;
 }
 
 .v-list__tile__content{
