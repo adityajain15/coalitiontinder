@@ -114,7 +114,7 @@ export default {
       },
       rawData: [],
       total_votes_nationally: 0,
-      swings: [], //{ party: 'NDA', value: -2, filter: [] }
+      swings: [], // { party: 'NDA', value: -2, filter: [] }
       parties: new Map(),
       states: [],
       vote_tallies: [],
@@ -219,9 +219,7 @@ export default {
         }
       }
       this.parties = Array.from(parties.entries()).sort((a, b) => {
-        if(this.restrictedParties.includes(a[0]) && this.restrictedParties.includes(b[0]) ) { return a[1] < b[1] ? 1 : -1 }
-        else if(this.restrictedParties.includes(a[0])) { return -1 }
-        else if(this.restrictedParties.includes(b[0])) { return 1 }
+        if (this.restrictedParties.includes(a[0]) && this.restrictedParties.includes(b[0])) { return a[1] < b[1] ? 1 : -1 } else if (this.restrictedParties.includes(a[0])) { return -1 } else if (this.restrictedParties.includes(b[0])) { return 1 }
         return a[1] < b[1] ? 1 : -1
       })
     },
