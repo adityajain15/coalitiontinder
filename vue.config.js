@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? '/coalitiontinder/' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/the-election-game/' : '/',
   configureWebpack: {
     resolve: {
       symlinks: false

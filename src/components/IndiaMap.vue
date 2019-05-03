@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @mouseout="$emit('tooltipOff')">
     <IndiaSVG ref="map" class="map"/>
   </div>
 </template>

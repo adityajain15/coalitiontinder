@@ -2,7 +2,7 @@
   <v-app style="background:floralwhite;">
     <div id="app">
       <div class="w-100 w-40-ns center dib-ns background-white bb bw2 bw0-ns b--black v-mid relative" ref="mapcontainer" id="mapcontainer">
-        <div id="tooltip" class="absolute rajdhani bold w-75 pa2" :style="tooltip.style" v-if="tooltip.display">
+        <div id="tooltip" class="absolute rajdhani bold w-75 pa2" :style="tooltip.style" v-if="tooltip.display" @click="tooltipOff">
           <span class="f3">{{tooltip.constituency}}{{tooltip.state === tooltip.constituency ? '' : `, ${tooltip.state}`}}</span>
           <h2 class="underline">Top 3 results with selected coalitions</h2>
           <template v-for="(coalition, index) in tooltip.coalitionWinner" v-if="index < 3">
@@ -18,8 +18,9 @@
               <span class="dib w-50">{{Intl.NumberFormat('en-IN').format(party.total)}} ({{parseFloat((party.total / (tooltip.coalitionWinner.map(d=>d[0]).reduce((a,b)=>a+b))) * 100).toFixed(2)}}%)</span>
             </div>
           </template>
+          <span v-if="isMobile()" class="f5 db tc pt3" style="color: red;">Tap within this box to dismiss</span>
         </div>
-        <IndiaMap class="w-80 w-100-ns center" @tooltip="changeTooltip" @tooltipOff="tooltipOff" @click="tooltipOff"/>
+        <IndiaMap class="w-100 center" @tooltip="changeTooltip" @tooltipOff="tooltipOff"/>
         <div class="w-100 rajdhani f3 pv4 lh-title">
           <div class="w-75 center bold f2">
             <span class="w-70 dib">Party</span>
@@ -74,7 +75,7 @@
                 <span class="f3 f2-ns bold">{{party[0]}}</span>
                 <span class="f4 f4-ns db">{{partynames[party[0]]}}</span>
               </div>
-              
+
               <div class="w-100 w-25-ns dib pa2 grow v-top" v-if="!restrictedParties.includes(party[0]) || party[0] === 'BJP'"><button :disabled="restrictedParties.includes(party[0])" @click="changeCoalitions(party[0], NDA)" class="style-button w-100 pa2" :style="NDA.includes(party[0]) ? 'background: orange' : ''">NDA</button></div>
               <div class="w-100 w-25-ns dib pa2 grow v-top" v-if="!restrictedParties.includes(party[0]) || party[0] === 'INC'"><button :disabled="restrictedParties.includes(party[0])" @click="changeCoalitions(party[0], UPA)" class="style-button w-100 pa2" :style="UPA.includes(party[0]) ? 'background: royalblue' : ''">UPA</button></div>
               <div class="w-100 w-25-ns dib pa2 grow v-top" v-if="!restrictedParties.includes(party[0]) || party[0] === 'BSP' || party[0] === 'SP' || party[0] === 'RLD'"><button @click="changeCoalitions(party[0], Grand)" class="style-button w-100 h-100 pa2" :style="Grand.includes(party[0]) ? 'background: deeppink' : ''">Grand Alliance</button></div>
@@ -129,7 +130,7 @@ export default {
   async mounted () {
     const map_height = this.$refs.mapcontainer.getBoundingClientRect().height
     const device_height = window.innerHeight
-    this.$refs.hudcontainer.style.height = `${window.innerWidth < toPX('48em') ? 0.8 * device_height : device_height}px`
+    this.$refs.hudcontainer.style.height = `${window.innerWidth < toPX('48em') ? 0.9 * device_height : device_height}px`
     this.$refs.listcontainer.style.height = `${this.$refs.hudcontainer.getBoundingClientRect().height - this.$refs.buttonContainer.getBoundingClientRect().height}px`
 
     // this.$refs.swingcontainer.style.height = `${list_container_height}px`
@@ -147,7 +148,7 @@ export default {
     let names_promise = csv('./partynames.csv', (d) => {
       this.partynames[d.party] = d.party_name
     })
-    
+
     const candidates = await candidates_promise
 
     this.total_votes_nationally = candidates.map(d => d.total).reduce((a, b) => a + b)
@@ -168,6 +169,9 @@ export default {
     blah () {
       this.getVoteTallies()
       this.colorConstituencies()
+    },
+    isMobile () {
+      return window.innerWidth < toPX('48em')
     },
     changeTooltip ([event, constituency, state]) {
       this.$set(this.tooltip, 'state', state.replace(/_/g, ' '))
