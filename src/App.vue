@@ -19,7 +19,7 @@
             </div>
           </template>
         </div>
-        <IndiaMap class="w-80 w-100-ns center" @tooltip="changeTooltip" @tooltipOff="tooltipOff"/>
+        <IndiaMap class="w-80 w-100-ns center" @tooltip="changeTooltip" @tooltipOff="tooltipOff" @click="tooltipOff"/>
         <div class="w-100 rajdhani f3 pv4 lh-title">
           <div class="w-75 center bold f2">
             <span class="w-70 dib">Party</span>
@@ -54,9 +54,10 @@
         </div>
         <keep-alive>
           <div v-if="showSwingContainer" ref="swingcontainer" id="swingcontainer" class="overflow-scroll ph2">
+            <p class="w-100 db center tc f3 f3-ns pv2 bold" ref="spancontainer">Assign vote swings to and away from a coalition. Swings can be applied nationally or within specific states</p>
             <template v-for="(swing, index) in swings">
               <div :key="`swing-${index}`" :class="index ? 'mv6' : 'mb6'">
-                <v-select class="w-third ph2 rajdhani" :style="{display:'inline-block'}" v-model="swing.party" :items="['NDA', 'UPA', 'Mahagathbandan']" @change="colorConstituencies" label="Swing from"></v-select>
+                <v-select class="w-third ph2 rajdhani" :style="{display:'inline-block'}" v-model="swing.party" :items="['NDA', 'UPA', 'Mahagathbandan']" @change="colorConstituencies" label="Swing from/to"></v-select>
                 <number-input class="v-mid w-third" v-model="swing.value" @change="colorConstituencies" :min="-100" :max="100" inline controls placeholder="Default"></number-input>
                 <v-select class="w-100 rajdhani mt0" v-model="swing.filter" :items="states" @change="blah()" label="Apply swing to specific states" multiple chips></v-select>
                 <button class="style-button db center pa2 grow remove-button" @click="removeSwing(index)">Remove</button>
@@ -67,12 +68,16 @@
         </keep-alive>
         <keep-alive>
           <div v-if="!showSwingContainer" ref="listcontainer" id="listcontainer" class="overflow-scroll ph2">
-            <span class="w-100 db center tc f3 f2-ns bold pv2" ref="spancontainer">Change party allegiances to see how the seat share changes</span>
-            <div v-for="(party, index) in parties" class="pv2 ph5 ph0-ns" :key="`party-${index}`" style="box-sizing: border-box;" :id="`list-item-${index}`">
-              <span class="f3 f2-ns tc tl-ns w-100 w-25-ns dib bold">{{party[0]}}</span>
-              <div class="w-100 w-25-ns dib pa2 grow"><button :disabled="restrictedParties.includes(party[0])" v-if="!restrictedParties.includes(party[0]) || party[0] === 'BJP'" @click="changeCoalitions(party[0], NDA)" class="style-button w-100 pa2" :style="NDA.includes(party[0]) ? 'background: orange' : ''">NDA</button></div>
-              <div class="w-100 w-25-ns dib pa2 grow"><button :disabled="restrictedParties.includes(party[0])" v-if="!restrictedParties.includes(party[0]) || party[0] === 'INC'" @click="changeCoalitions(party[0], UPA)" class="style-button w-100 pa2" :style="UPA.includes(party[0]) ? 'background: royalblue' : ''">UPA</button></div>
-              <div class="w-100 w-25-ns dib pa2 grow"><button v-if="!restrictedParties.includes(party[0]) || party[0] === 'BSP' || party[0] === 'SP' || party[0] === 'RLD'" @click="changeCoalitions(party[0], Grand)" class="style-button w-100 pa2" :style="Grand.includes(party[0]) ? 'background: deeppink' : ''">Grand Alliance</button></div>
+            <p class="w-100 db center tc f3 f3-ns pv2 bold" ref="spancontainer">Scroll within this list of key players and assign them to a coalition to see how the electoral map changes</p>
+            <div v-for="(party, index) in parties" class="pv3 ph5 ph0-ns" :key="`party-${index}`" style="box-sizing: border-box;" :id="`list-item-${index}`">
+              <div class="tc tl-ns w-100 w-25-ns dib">
+                <span class="f3 f2-ns bold">{{party[0]}}</span>
+                <span class="f4 f4-ns db">{{partynames[party[0]]}}</span>
+              </div>
+              
+              <div class="w-100 w-25-ns dib pa2 grow v-top" v-if="!restrictedParties.includes(party[0]) || party[0] === 'BJP'"><button :disabled="restrictedParties.includes(party[0])" @click="changeCoalitions(party[0], NDA)" class="style-button w-100 pa2" :style="NDA.includes(party[0]) ? 'background: orange' : ''">NDA</button></div>
+              <div class="w-100 w-25-ns dib pa2 grow v-top" v-if="!restrictedParties.includes(party[0]) || party[0] === 'INC'"><button :disabled="restrictedParties.includes(party[0])" @click="changeCoalitions(party[0], UPA)" class="style-button w-100 pa2" :style="UPA.includes(party[0]) ? 'background: royalblue' : ''">UPA</button></div>
+              <div class="w-100 w-25-ns dib pa2 grow v-top" v-if="!restrictedParties.includes(party[0]) || party[0] === 'BSP' || party[0] === 'SP' || party[0] === 'RLD'"><button @click="changeCoalitions(party[0], Grand)" class="style-button w-100 h-100 pa2" :style="Grand.includes(party[0]) ? 'background: deeppink' : ''">Grand Alliance</button></div>
             </div>
           </div>
         </keep-alive>
@@ -112,11 +117,11 @@ export default {
         'Grand': 0,
         'NA': 0
       },
-      rawData: [],
       total_votes_nationally: 0,
       swings: [], // { party: 'NDA', value: -2, filter: [] }
       parties: new Map(),
       states: [],
+      partynames: {},
       vote_tallies: [],
       showSwingContainer: false
     }
@@ -124,32 +129,28 @@ export default {
   async mounted () {
     const map_height = this.$refs.mapcontainer.getBoundingClientRect().height
     const device_height = window.innerHeight
-    this.$refs.hudcontainer.style.height = `${window.innerWidth < toPX('48em') ? device_height : device_height}px`
+    this.$refs.hudcontainer.style.height = `${window.innerWidth < toPX('48em') ? 0.8 * device_height : device_height}px`
     this.$refs.listcontainer.style.height = `${this.$refs.hudcontainer.getBoundingClientRect().height - this.$refs.buttonContainer.getBoundingClientRect().height}px`
 
     // this.$refs.swingcontainer.style.height = `${list_container_height}px`
 
-    let candidates = await csv('./result.csv', (d) => {
+    let candidates_promise = csv('./result_compress.csv', (d) => {
       return {
         state: d.state.trim().toLowerCase(),
         name: d.name.trim().toLowerCase(),
-        age: +d.age,
         candidate: d.candidate.trim(),
-        electors: +d.electors,
-        general: +d.general,
-        postal: +d.postal,
-        sex: d.sex.trim(),
-        symbol: d.symbol.trim(),
         total: +d.total,
-        party: d.party.trim(),
-        category: d.category.trim(),
-        vote_pct: +d.vote_pct,
-        electors_pct: +d.electors_pct
+        party: d.party.trim()
       }
     })
 
+    let names_promise = csv('./partynames.csv', (d) => {
+      this.partynames[d.party] = d.party_name
+    })
+    
+    const candidates = await candidates_promise
+
     this.total_votes_nationally = candidates.map(d => d.total).reduce((a, b) => a + b)
-    this.rawData = candidates
     // candidates = candidates.filter(d => d.party !== 'IND' && d.party !== 'NOTA')
     this.candidates = nest()
       .key(d => capitalize.words(d.state))
